@@ -1,0 +1,57 @@
+networks:
+  default:
+    name: api-network
+
+services:
+  nginx:
+    image: nginx:stable
+    container_name: nginx_container
+    ports:
+      - "81:80"
+    volumes:
+      - ./Docker/conf/nginx.conf:/etc/nginx/conf.d/default.conf
+      - .:/var/www/html/amazon-product-prices
+    links:
+      - php
+
+  php:
+    build: ./Docker/php8.3
+    expose:
+      - 9000
+    volumes:
+      - .:/var/www/html/amazon-product-prices
+    container_name: api_php
+    links:
+      - mongodb
+
+  mongodb:
+    image: mongo
+    container_name: mongodb_container
+    volumes:
+      - ./.data/mongodb:/data/db
+    ports:
+        - "27016:27017"
+
+  mongodb_test:
+    image: mongo
+    container_name: mongodb_test_container
+    volumes:
+      - ./.data/mongodb_test:/data/db_test
+    ports:
+        - "27015:27017"
+
+  beanstalkd:
+    build: ./Docker/beanstalkd
+    volumes:
+      - ./Docker/conf/beanstalkd:/etc/default/beanstalkd
+    container_name: beanstalkd_container
+    ports:
+      - "11301:11300"
+
+  redis:
+      image: redis:latest
+      ports:
+        - "6378:6379"
+      volumes:
+        - ./.data/redis:/data
+      container_name: redis_container
