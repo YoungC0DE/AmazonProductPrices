@@ -31,7 +31,7 @@ class ticketQueue extends Command
      */
     public function handle()
     {
-        $queue = BeanstalkService::getInstance(env('BEANSTALK_HOST'));
+        $queue = BeanstalkService::getInstance();
         $queue->useTube(new TubeName(BeanstalkService::TICKET_QUEUE_TUBE));
 
         try {

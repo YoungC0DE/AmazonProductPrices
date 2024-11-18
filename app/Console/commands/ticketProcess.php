@@ -2,9 +2,8 @@
 
 namespace App\Console\Commands;
 
-use App\Models\Tickets;
-use App\Repositories\TicketRepository;
 use App\Services\BeanstalkService;
+use App\Services\CrawlerService;
 use \Pheanstalk\Values\TubeName;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
@@ -30,30 +29,45 @@ class ticketProcess extends Command
      */
     public function handle()
     {
-        $queue = BeanstalkService::getInstance(env('BEANSTALK_HOST'));
+        $queue = BeanstalkService::getInstance();
         $queue->watch(new TubeName(BeanstalkService::TICKET_PROCESS_TUBE));
 
         while(true) {
             $job = $queue->reserve();
 
-            if (isset($job)) {
+            if ($job === null) {
+                sleep(2);
                 continue;
             }
 
+            $jobData = json_decode($job->getData(), true);
+
             $stateLog = [
                 'queue' => $this->signature,
+                'ticketId' => $jobData['_id'] ?? '',
+                'request' => $jobData['request'] ?? ''
             ];
 
             try {
-                $repository = new TicketRepository(
-                    new Tickets()
-                );
+                $driver = CrawlerService::getDriver();
 
-                $tickets = $repository->getPendingTickets();
+                $driver->manage()->window()->maximize();
 
-                dd($tickets);
+                $driver->get('https://www.amazon.com.br/');
+
+                sleep(2);
+
+                $driver->quit();
+
+                $queue->delete($job);
             } catch (\Exception $error) {
-                Log::error($error, $stateLog);
+                $queue->delete($job);
+                Log::error('Error processing ticket', 
+                    array_merge($stateLog, [
+                        'error_message' => $error->getMessage(),
+                        'error_trace' => $error->getTraceAsString(),
+                    ])
+                );
             }
         }
     }

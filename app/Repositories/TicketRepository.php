@@ -31,21 +31,22 @@ class TicketRepository
     }
 
     /**
+     * @param array $params
      * @return App\Models\Tickets|null
      */
-    public function create()
+    public function create($params)
     {
         $status = [
             'code' => $this->model::STATUS_PENDING,
             'name' => $this->model::STATUS_LABEL[$this->model::STATUS_PENDING]
         ];
 
-        $params = [
-            'request' => 'teste',
+        $data = [
+            'request' => $params['request'],
             'status' => $status
         ];
 
-        return $this->model->create($params);
+        return $this->model->create($data);
     }
 
     /**
@@ -61,7 +62,7 @@ class TicketRepository
 
     /**
      * @param string $ticketId
-     * @return App\Models\Tickets|null
+     * @return array|null
      */
     public function getPendingTickets(string $ticketId = '')
     {
@@ -72,6 +73,6 @@ class TicketRepository
             $query->where('_id', new ObjectId($ticketId));
         }
 
-        return $query->get();
+        return $query->get()->toArray();
     }
 }

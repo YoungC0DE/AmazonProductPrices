@@ -42,8 +42,6 @@ services:
 
   beanstalkd:
     build: ./Docker/beanstalkd
-    volumes:
-      - ./Docker/conf/beanstalkd:/etc/default/beanstalkd
     container_name: beanstalkd_container
     ports:
       - "11301:11300"
@@ -55,3 +53,10 @@ services:
       volumes:
         - ./.data/redis:/data
       container_name: redis_container
+  
+  selenium:
+    image: selenium/standalone-chrome-debug:latest
+    container_name: selenium_container
+    ports:
+      - "4445:4445" # Selenium
+      - "5900:5900" # VNC
