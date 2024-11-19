@@ -46,7 +46,7 @@ class ticketProcess extends Command
             $stateLog = [
                 'queue' => $this->signature,
                 'ticketId' => $jobData['_id'] ?? '',
-                'request' => $jobData['request'] ?? ''
+                'crawlerType' => $jobData['crawlerType'] ?? ''
             ];
 
             try {

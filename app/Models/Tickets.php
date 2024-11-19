@@ -13,10 +13,10 @@ class Tickets extends BaseModel
      * @var array<int, string>
      */
     const STATUS_LABEL = [
-        self::STATUS_PENDING => 'Pending',
-        self::STATUS_FINISHED => 'Finished',
-        self::STATUS_RUNNING => 'Running',
-        self::STATUS_ERROR => 'Error',
+        self::STATUS_PENDING => 'PENDING',
+        self::STATUS_FINISHED => 'FINISHED',
+        self::STATUS_RUNNING => 'RUNNING',
+        self::STATUS_ERROR => 'ERROR'
     ];
 
     /**
@@ -25,7 +25,8 @@ class Tickets extends BaseModel
      * @var array<int, string>
      */
     protected $fillable = [
-        'request',
-        'status'
+        'crawlerType',
+        'status',
+        'options'
     ];
 }

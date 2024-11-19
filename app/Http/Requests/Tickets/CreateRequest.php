@@ -17,7 +17,9 @@ class CreateRequest extends FormRequest
     public function rules()
     {
         return [
-            'request' => 'required|string',
+            'crawlerType' => 'required|string',
+            'options.orderBy' => 'required|string',
+            'options.totalPages' => 'required|integer',
         ];
     }
 
@@ -38,8 +40,12 @@ class CreateRequest extends FormRequest
     public function messages()
     {
         return [
-            'request.required' => "is required.",
-            'request.string' => "must be type string.",
+            'crawlerType.required' => "is required.",
+            'crawlerType.string' => "must be type string.",
+            'options.orderBy.required' => "is required.",
+            'options.orderBy.string' => "must be type string.",
+            'options.totalPages.required' => "is required.",
+            'options.totalPages.string' => "must be type string."
         ];
     }
 }

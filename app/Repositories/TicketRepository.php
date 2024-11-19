@@ -8,7 +8,7 @@ use MongoDB\Laravel\Eloquent\Casts\ObjectId;
 class TicketRepository
 {
     public function __construct(
-        protected Tickets $model 
+        protected Tickets $model
     ){}
 
     /**
@@ -42,7 +42,11 @@ class TicketRepository
         ];
 
         $data = [
-            'request' => $params['request'],
+            'crawlerType' => $params['crawlerType'],
+            'options' => [
+                'orderBy' => $params['options']['orderBy'],
+                'totalPages' => $params['options']['totalPages']
+            ],
             'status' => $status
         ];
 
