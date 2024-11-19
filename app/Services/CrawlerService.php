@@ -33,7 +33,7 @@ class CrawlerService
                 $crawlerOptions[] = "--headless";
             }
         }
-        
+
         $options->addArguments($crawlerOptions);
 
         $capabilities = DesiredCapabilities::chrome();

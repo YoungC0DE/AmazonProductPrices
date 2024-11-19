@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Crawlers\AmazonCrawler;
 use App\Services\BeanstalkService;
 use App\Services\CrawlerService;
 use Illuminate\Console\Command;
@@ -49,15 +50,12 @@ class ticketProcess extends Command
             ];
 
             try {
-                $driver = CrawlerService::getDriver();
+                Log::info('Starting crawler...');
 
-                $driver->manage()->window()->maximize();
+                $response = (new AmazonCrawler())
+                    ->process();
 
-                $driver->get('https://www.amazon.com.br/');
-
-                sleep(10);
-
-                $driver->quit();
+                dd($response);
 
                 $queue->delete($job);
             } catch (\Exception $error) {
