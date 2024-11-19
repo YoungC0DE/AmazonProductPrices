@@ -49,8 +49,6 @@ class AmazonCrawler extends AbstractCrawler
 
     protected function parseItems()
     {
-        // parseia os itens e retorna
-
         $this->response = [
             'product' => '',
             'description' => '',

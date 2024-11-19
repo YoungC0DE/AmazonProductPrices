@@ -52,11 +52,9 @@ class ticketProcess extends Command
             try {
                 Log::info('Starting crawler...');
 
-                $type = 'Amazon';
-                $crawler = CrawlerFactory::create($type);
+                $crawler = CrawlerFactory::create($jobData['crawlerType']);
 
                 $response = $crawler->process();
-                dd($response);
 
                 $queue->delete($job);
             } catch (\Exception $error) {

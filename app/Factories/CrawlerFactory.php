@@ -2,7 +2,7 @@
 
 namespace App\Factories;
 
-use PHPUnit\Util\InvalidDirectoryException;
+use App\Exceptions\InvalidClassException;
 
 class CrawlerFactory
 {
@@ -16,6 +16,6 @@ class CrawlerFactory
             return new $class();
         }
 
-        throw new InvalidDirectoryException('Crawler class not found');
+        throw new InvalidClassException('Crawler class not found');
     }
 }
