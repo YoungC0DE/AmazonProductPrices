@@ -5,7 +5,7 @@ networks:
 services:
   nginx:
     image: nginx:stable
-    container_name: nginx_container
+    container_name: nginx_awz_container
     ports:
       - "81:80"
     volumes:
@@ -20,13 +20,13 @@ services:
       - 9000
     volumes:
       - .:/var/www/html/amazon-product-prices
-    container_name: api_php
+    container_name: api_awz_php
     links:
       - mongodb
 
   mongodb:
     image: mongo
-    container_name: mongodb_container
+    container_name: mongodb_awz_container
     volumes:
       - ./.data/mongodb:/data/db
     ports:
@@ -42,7 +42,7 @@ services:
 
   beanstalkd:
     build: ./Docker/beanstalkd
-    container_name: beanstalkd_container
+    container_name: beanstalkd_awz_container
     ports:
       - "11301:11300"
 
@@ -52,8 +52,8 @@ services:
         - "6378:6379"
       volumes:
         - ./.data/redis:/data
-      container_name: redis_container
-  
+      container_name: redis_awz_container
+
   selenium:
     image: selenium/standalone-chrome-debug:latest
     container_name: selenium_container

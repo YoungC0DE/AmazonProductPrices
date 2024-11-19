@@ -4,9 +4,9 @@ namespace App\Console\Commands;
 
 use App\Services\BeanstalkService;
 use App\Services\CrawlerService;
-use \Pheanstalk\Values\TubeName;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
+use Pheanstalk\Values\TubeName;
 
 class ticketProcess extends Command
 {
@@ -55,14 +55,14 @@ class ticketProcess extends Command
 
                 $driver->get('https://www.amazon.com.br/');
 
-                sleep(2);
+                sleep(10);
 
                 $driver->quit();
 
                 $queue->delete($job);
             } catch (\Exception $error) {
                 $queue->delete($job);
-                Log::error('Error processing ticket', 
+                Log::error('Error processing ticket',
                     array_merge($stateLog, [
                         'error_message' => $error->getMessage(),
                         'error_trace' => $error->getTraceAsString(),
