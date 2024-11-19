@@ -1,20 +1,27 @@
 <?php
 
-namespace App\Services;
+namespace App\Crawlers;
 
 use Facebook\WebDriver\Chrome\ChromeOptions;
 use Facebook\WebDriver\Remote\DesiredCapabilities;
 use Facebook\WebDriver\Remote\RemoteWebDriver;
 
-class CrawlerService
+abstract class AbstractCrawler
 {
+    protected RemoteWebDriver $driver;
+
+    public function __construct()
+    {
+        $this->getDriver();
+    }
+
     /**
      * Returns a configured instance of Selenium WebDriver.
      * @param array $crawlerOptions
      *
      * @return RemoteWebDriver
      */
-    public static function getDriver(array $crawlerOptions = [])
+    public function getDriver(array $crawlerOptions = [])
     {
         // 'selenium' is the name of the container in Docker
         $host = env('SELENIUM_HOST', 'http://selenium_container:4444/wd/hub');
@@ -25,7 +32,6 @@ class CrawlerService
             $crawlerOptions = [
                 "--no-sandbox",
                 "--disable-dev-shm-usage",
-                "--remote-debugging-port=9222",
                 "--disable-software-rasterizer",
             ];
 
@@ -41,6 +47,10 @@ class CrawlerService
         $capabilities->setCapability('acceptInsecureCerts', true);
         $capabilities->setCapability(ChromeOptions::CAPABILITY, $options);
 
-        return RemoteWebDriver::create($host, $capabilities);
+        $this->driver = RemoteWebDriver::create($host, $capabilities);
+
+        return $this->driver;
     }
+
+    public abstract function process();
 }

@@ -3,8 +3,8 @@
 namespace App\Console\Commands;
 
 use App\Crawlers\AmazonCrawler;
+use App\Factories\CrawlerFactory;
 use App\Services\BeanstalkService;
-use App\Services\CrawlerService;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
 use Pheanstalk\Values\TubeName;
@@ -52,9 +52,10 @@ class ticketProcess extends Command
             try {
                 Log::info('Starting crawler...');
 
-                $response = (new AmazonCrawler())
-                    ->process();
+                $type = 'Amazon';
+                $crawler = CrawlerFactory::create($type);
 
+                $response = $crawler->process();
                 dd($response);
 
                 $queue->delete($job);
