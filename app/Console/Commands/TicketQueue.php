@@ -10,7 +10,7 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
 use Pheanstalk\Pheanstalk;
 
-class ticketQueue extends Command
+class TicketQueue extends Command
 {
     /**
      * The name and signature of the console command.
@@ -26,19 +26,26 @@ class ticketQueue extends Command
      */
     protected $description = 'execute pendent tickets';
 
+    protected Pheanstalk $queue;
+    protected TicketRepository $ticketRepository;
+
+    public function __construct() {
+        parent::__construct();
+
+        $this->ticketRepository = new TicketRepository(new Tickets());
+        $this->queue = BeanstalkService::getInstance();
+    }
+
     /**
      * Execute the console command.
      */
-    public function handle()
+    public function handle(): void
     {
-        $queue = BeanstalkService::getInstance();
-        $queue->useTube(new TubeName(BeanstalkService::TICKET_QUEUE_TUBE));
+        $this->queue->useTube(
+            new TubeName(BeanstalkService::TICKET_QUEUE_TUBE)
+        );
 
         try {
-            $repository = new TicketRepository(
-                new Tickets()
-            );
-
             $ticketId = $this->option('ticketId') ?? '';
 
             $context = [
@@ -47,17 +54,23 @@ class ticketQueue extends Command
 
             Log::info('Looking for pending tickets...', $context);
 
-            $tickets = $repository->getPendingTickets($ticketId) ?? [];
+            $tickets = $this->ticketRepository
+                ->getPendingTickets($ticketId) ?? [];
 
-            Log::info('pending tickets found: '. count($tickets), $context);
+            $ticketsCount = count($tickets);
+            if (empty($ticketsCount) || $ticketsCount <= 0) {
+                Log::info('No pending tickets found.');
 
-            if (!empty($tickets)) {
-                foreach($tickets as $ticket) {
-                    $this->sendToQueue($ticket);
-                }
+                return;
             }
 
-            Log::info('Process finalized.', $context);
+            Log::info("pending tickets found: [$ticketsCount]", $context);
+
+            foreach ($tickets as $ticket) {
+                $this->sendToQueue($ticket);
+            }
+
+            Log::info('Process finished.', $context);
         } catch (\Exception $error) {
             Log::error($error, $context);
         }
@@ -67,11 +80,13 @@ class ticketQueue extends Command
      * @param array $ticket
      * @return void
      */
-    public function sendToQueue(array $ticket)
+    public function sendToQueue(array $ticket): void
     {
-        $queue = BeanstalkService::getInstance(env('BEANSTALK_HOST'));
-        $queue->useTube(new TubeName(BeanstalkService::TICKET_PROCESS_TUBE));
-        $queue->put(
+        $this->queue->useTube(
+            new TubeName(BeanstalkService::TICKET_PROCESS_TUBE)
+        );
+
+        $this->queue->put(
             json_encode($ticket),
             Pheanstalk::DEFAULT_PRIORITY,
             Pheanstalk::DEFAULT_DELAY,

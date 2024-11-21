@@ -30,6 +30,9 @@ class Tickets extends BaseModel
         'searchQuery',
         'filters',
         'sortBy',
-        'ratingAbove'
+        'ratingAbove',
+        'status',
+        'code',
+        'name'
     ];
 }
