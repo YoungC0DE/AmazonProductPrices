@@ -3,9 +3,11 @@
 namespace App\Console\Commands;
 
 use App\Factories\CrawlerFactory;
+use App\Models\Products;
 use App\Services\BeanstalkService;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
+use MongoDB\BSON\ObjectId;
 use Pheanstalk\Pheanstalk;
 use Pheanstalk\Values\TubeName;
 
@@ -69,6 +71,11 @@ class TicketProcess extends Command
                 $crawler = CrawlerFactory::create($crawlerName);
 
                 $response = $crawler->process();
+                $response = array_merge($response, [
+                    'from' => new ObjectId($jobData['_id'])]
+                );
+
+                Products::create($response);
 
                 $this->queue->delete($job);
             } catch (\Exception $error) {
