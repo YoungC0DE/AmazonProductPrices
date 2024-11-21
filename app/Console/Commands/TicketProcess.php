@@ -2,14 +2,15 @@
 
 namespace App\Console\Commands;
 
-use App\Crawlers\AmazonCrawler;
 use App\Factories\CrawlerFactory;
 use App\Services\BeanstalkService;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
+use Pheanstalk\Pheanstalk;
+use Pheanstalk\Values\Job;
 use Pheanstalk\Values\TubeName;
 
-class ticketProcess extends Command
+class TicketProcess extends Command
 {
     /**
      * The name and signature of the console command.
@@ -25,19 +26,30 @@ class ticketProcess extends Command
      */
     protected $description = 'execute pendent tickets';
 
+    protected Pheanstalk $queue;
+
+    public function __construct() {
+        parent::__construct();
+
+        $this->queue = BeanstalkService::getInstance();
+    }
+
     /**
      * Execute the console command.
      */
     public function handle()
     {
-        $queue = BeanstalkService::getInstance();
-        $queue->watch(new TubeName(BeanstalkService::TICKET_PROCESS_TUBE));
+        $this->queue->watch(
+            new TubeName(BeanstalkService::TICKET_PROCESS_TUBE)
+        );
 
         while(true) {
-            $job = $queue->reserve();
+            $job = $this->queue
+                ->reserve();
 
             if ($job === null) {
                 sleep(2);
+
                 continue;
             }
 
@@ -46,19 +58,22 @@ class ticketProcess extends Command
             $stateLog = [
                 'queue' => $this->signature,
                 'ticketId' => $jobData['_id'] ?? '',
-                'crawlerType' => $jobData['crawlerType'] ?? ''
+                'requestSettings' => $jobData['requestSettings'] ?? '',
+                'filters' => $jobData['filters'] ?? '',
+                'status' => $jobData['status'] ?? ''
             ];
 
             try {
                 Log::info('Starting crawler...');
 
-                $crawler = CrawlerFactory::create($jobData['crawlerType']);
+                $crawlerName = $jobData['requestSettings']['platform'];
+                $crawler = CrawlerFactory::create($crawlerName);
 
                 $response = $crawler->process();
 
-                $queue->delete($job);
+                $this->queue->delete($job);
             } catch (\Exception $error) {
-                $queue->delete($job);
+                $this->queue->delete($job);
                 Log::error('Error processing ticket',
                     array_merge($stateLog, [
                         'error_message' => $error->getMessage(),
