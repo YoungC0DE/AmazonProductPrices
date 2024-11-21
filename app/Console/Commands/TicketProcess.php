@@ -7,7 +7,6 @@ use App\Services\BeanstalkService;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
 use Pheanstalk\Pheanstalk;
-use Pheanstalk\Values\Job;
 use Pheanstalk\Values\TubeName;
 
 class TicketProcess extends Command
