@@ -9,7 +9,9 @@ class TicketRepository
 {
     public function __construct(
         protected Tickets $model
-    ){}
+    ) {
+
+    }
 
     /**
      * @param string $ticketId
@@ -31,23 +33,20 @@ class TicketRepository
     }
 
     /**
-     * @param array $params
-     * @return App\Models\Tickets|null
+     * @param $params
+     * @return mixed
      */
     public function create($params)
     {
-        $status = [
-            'code' => $this->model::STATUS_PENDING,
-            'name' => $this->model::STATUS_LABEL[$this->model::STATUS_PENDING]
+        $statusData = [
+            'code' => Tickets::STATUS_PENDING,
+            'name' => Tickets::STATUS_LABEL[Tickets::STATUS_PENDING]
         ];
 
         $data = [
-            'crawlerType' => $params['crawlerType'],
-            'options' => [
-                'orderBy' => $params['options']['orderBy'],
-                'totalPages' => $params['options']['totalPages']
-            ],
-            'status' => $status
+          'requestSettings' => $params['requestSettings'],
+          'filters' => $params['filters'],
+          'status' => $statusData
         ];
 
         return $this->model->create($data);

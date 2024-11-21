@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\Tickets\CreateRequest;
 use App\Repositories\TicketRepository;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class TicketController extends Controller
@@ -28,10 +29,11 @@ class TicketController extends Controller
     }
 
     /**
-     * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @param CreateRequest $request
+     * @return JsonResponse
+     * @throws \Exception
      */
-    public function create(CreateRequest $request)
+    public function create(CreateRequest $request): JsonResponse
     {
         try {
             $result = $this->repository->create($request->all());

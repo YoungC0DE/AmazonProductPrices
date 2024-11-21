@@ -25,8 +25,11 @@ class Tickets extends BaseModel
      * @var array<int, string>
      */
     protected $fillable = [
-        'crawlerType',
-        'status',
-        'options'
+        'requestSettings',
+        'platform',
+        'searchQuery',
+        'filters',
+        'sortBy',
+        'ratingAbove'
     ];
 }
