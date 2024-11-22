@@ -1,6 +1,5 @@
 <?php
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -14,13 +13,10 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-// fast check
-
-
 Route::prefix('ticket')
     ->namespace('App\Http\Controllers')
     ->group(function () {
         Route::post('create', 'TicketController@create');
         Route::get('get-all', 'TicketController@getAll');
-        Route::get('{$ticketId}', 'TicketController@get');
+        Route::get('{ticketId}', 'TicketController@get');
     });

@@ -3,7 +3,7 @@
 namespace App\Repositories;
 
 use App\Models\Tickets;
-use MongoDB\Laravel\Eloquent\Casts\ObjectId;
+use MongoDB\BSON\ObjectId;
 
 class TicketRepository
 {
@@ -15,7 +15,7 @@ class TicketRepository
 
     /**
      * @param string $ticketId
-     * @return App\Models\Tickets|null
+     * @return Tickets|null
      */
     public function get(string $ticketId)
     {
@@ -25,7 +25,7 @@ class TicketRepository
     }
 
     /**
-     * @return App\Models\Tickets|null
+     * @return \Illuminate\Database\Eloquent\Collection|null
      */
     public function getAll()
     {
