@@ -15,7 +15,7 @@ class TicketRepository
 
     /**
      * @param string $ticketId
-     * @return Tickets|null
+     * @return mixed
      */
     public function get(string $ticketId)
     {

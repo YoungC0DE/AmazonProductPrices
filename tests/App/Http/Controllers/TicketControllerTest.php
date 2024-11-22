@@ -3,22 +3,71 @@
 namespace Tests\App\Http\Controllers;
 
 use App\Http\Controllers\TicketController;
+use App\Http\Requests\Tickets\CreateRequest;
 use App\Models\Tickets;
 use App\Repositories\TicketRepository;
 use Tests\TestCase;
 
 class TicketControllerTest extends TestCase
 {
-    public function test_get_with_invalid_id(): void
+    protected TicketRepository $ticketRepository;
+    protected TicketController $ticketController;
+    protected CreateRequest $ticketRequest;
+
+    protected function setUp(): void
     {
-        $repository = new TicketRepository(
+        $this->ticketRepository = new TicketRepository(
             (new Tickets)
         );
 
-        $controller = new TicketController($repository);
-        $result = $controller->get('123')->getData(true);
+        $this->ticketController = new TicketController($this->ticketRepository);
+
+        $this->ticketRequest = new CreateRequest();
+
+        parent::setUp();
+    }
+
+    /**
+     * @return void
+     * @throws \Exception
+     */
+    public function testGetInvalidTicket(): void
+    {
+        $result = $this->ticketController
+            ->get('673f6c3e7956f4f6e10b7b22')
+            ->getData(true);
 
         $this->assertIsArray($result);
         $this->assertEmpty($result['item']);
+    }
+
+    /**
+     * @return void
+     * @throws \Exception
+     */
+    public function testCreateTicket(): void
+    {
+        $mockData = [
+            'requestSettings' => [
+                'platform' => 'AMAZON',
+                'searchQuery' => 'Nike SB Sneakers'
+            ],
+            'filters' => [
+                'sortBy' => 'priceAscending',
+                'ratingAbove' => 4
+            ]
+        ];
+
+        $request = $this->ticketRequest
+            ->replace($mockData);
+
+        $response = $this->ticketController
+            ->create($request);
+
+        $statusCode = $response->status();
+        $this->assertEquals(202, $statusCode);
+
+        $responseData = json_decode($response->content(), true);
+        $this->assertArrayHasKey('item', $responseData);
     }
 }
