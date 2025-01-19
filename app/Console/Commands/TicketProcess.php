@@ -78,6 +78,7 @@ class TicketProcess extends Command
                 Products::create($response);
 
                 $this->queue->delete($job);
+                Log::info('Process finished.');
             } catch (\Exception $error) {
                 $this->queue->delete($job);
                 Log::error('Error processing ticket',
