@@ -1,14 +1,16 @@
-# AmazonProductPrices
+# :money_with_wings: Amazon Product Prices :shopping:
 
 > Project initially created to perform an automated search for product price information on some digital platforms.
 
-## Technologies
- - Laravel 10;
- - Docker;
- - Mongodb;
- - Redis;
+## :technologist: Technologies
+<div>
+   <img src="https://skillicons.dev/icons?i=laravel" title="laravel" alt="laravel" width="40" height="40"/>
+   <img src="https://skillicons.dev/icons?i=mongodb" title="mongodb" alt="mongodb" width="40" height="40"/>
+   <img src="https://skillicons.dev/icons?i=redis" title="redis" alt="redis" width="40" height="40"/>
+   <img src="https://skillicons.dev/icons?i=docker" title="docker" alt="docker" width="40" height="40"/>
+</div>
 
-## Startup Project
+## :airplane: Startup Project
  - Clone the project: `git clone https://github.com/YoungC0DE/AmazonProductPrices.git`
  - Open the project in your IDE (I recommend vscode)
  - Open the terminal in this project, and start the docker with: `docker-compose up -d` (if you use windows, don't forgot to start the docker desktop)
@@ -21,15 +23,11 @@ Url base in local enviroment: `http://localhost:81/`
 
 #### :large_blue_circle: Return all tickets
 
-```http
-  GET /api/ticket
-```
+`GET /api/ticket`
 
 #### :large_blue_circle: Return a Ticket by ID
 
-```http
-  GET /api/ticket/${id}
-```
+`GET /api/ticket/${id}`
 
 | Parameter | type     | Description                 |
 | :-------- | :------- | :-------------------------- |
