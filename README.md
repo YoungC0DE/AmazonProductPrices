@@ -23,17 +23,19 @@ Url base in local enviroment: `http://localhost:81/`
 
 #### :large_blue_circle: Return all tickets
 
-`GET /api/ticket`
+    GET /api/ticket/get-all
 
 #### :large_blue_circle: Return a Ticket by ID
 
-`GET /api/ticket/${id}`
+    GET /api/ticket/${id}
 
 | Parameter | type     | Description                 |
 | :-------- | :------- | :-------------------------- |
 | `id`      | `string` | **Required**. The ticket Id |
 
 #### :green_circle: Create a Ticket
+
+    POST /api/ticket/create
 
 | Parameter   | type       | Description                     |
 | :---------- | :--------- | :------------------------------ |
