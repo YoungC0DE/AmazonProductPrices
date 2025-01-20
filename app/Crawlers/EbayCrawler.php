@@ -6,8 +6,12 @@ class EbayCrawler extends AbstractCrawler
 {
     protected array $response = [];
 
-    public function process()
+    /**
+     * @param array $ticketData
+     * @return array
+     */
+    public function process(array $ticketData): array
     {
-        dd('ebay crawler...');
+        return [];
     }
 }

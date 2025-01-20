@@ -45,7 +45,10 @@ class TicketProcess extends Command
             new TubeName(BeanstalkService::TICKET_PROCESS_TUBE)
         );
 
-        while(true) {
+        $maxJobs = 100; // Limite de jobs a serem processados em cada execução
+        $processedJobs = 0;
+
+        while($processedJobs < $maxJobs) {
             $job = $this->queue
                 ->reserve();
 
@@ -54,6 +57,8 @@ class TicketProcess extends Command
 
                 continue;
             }
+
+            $processedJobs++;
 
             $jobData = json_decode($job->getData(), true);
 

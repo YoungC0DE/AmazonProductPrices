@@ -6,8 +6,12 @@ class OlxCrawler extends AbstractCrawler
 {
     protected array $response = [];
 
-    public function process()
+    /**
+     * @param array $ticketData
+     * @return array
+     */
+    public function process(array $ticketData): array
     {
-        dd('olx crawler...');
+        return [];
     }
 }

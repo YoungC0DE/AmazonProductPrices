@@ -10,6 +10,8 @@ class AmazonCrawler extends AbstractCrawler
 {
     protected array $response = [];
 
+    protected const URL = 'https://www.amazon.com.br/';
+
     protected const MAX_LIST_ITEMS = 5;
 
     protected const IMAGE_SELETOR = '.s-image';
@@ -32,7 +34,7 @@ class AmazonCrawler extends AbstractCrawler
      */
     public function process(array $ticketData): array
     {
-        $this->driver->get('https://www.amazon.com.br/');
+        $this->driver->get(self::URL);
 
         sleep(2);
 

@@ -67,7 +67,6 @@ abstract class AbstractCrawler
         $normalizedText = preg_replace('/[\x00-\x1F\x7F-\x9F]/u', '', $normalizedText);
         $normalizedText = preg_replace('/[^\x20-\x7E]/u', '', $normalizedText);
         $normalizedText = htmlspecialchars($text, ENT_QUOTES, 'UTF-8');
-        $normalizedText = str_replace("\u{A0}", ' ', $normalizedText);
         $normalizedText = trim(preg_replace('/\s+/', ' ', $normalizedText));
 
         return $normalizedText;
@@ -99,7 +98,7 @@ abstract class AbstractCrawler
         try {
             $text = $item->findElement(
                 WebDriverBy::cssSelector($cssSelector)
-            )->getText();
+            )->getText() ?? '';
 
             if ($normalize) {
                 if ($typeNormalize == 'text') {
@@ -111,7 +110,7 @@ abstract class AbstractCrawler
 
             return $text;
         } catch (\Exception $e) {
-            return 'Not found';
+            return '';
         }
     }
 
@@ -129,7 +128,7 @@ abstract class AbstractCrawler
         try {
             $text = $item->findElement(
                 WebDriverBy::cssSelector($cssSelector)
-            )->getAttribute($attribute);
+            )->getAttribute($attribute) ?? '';
 
             if ($normalize) {
                 if ($typeNormalize == 'text') {
@@ -141,7 +140,7 @@ abstract class AbstractCrawler
 
             return $text;
         } catch (\Exception $e) {
-            return 'Not found';
+            return '';
         }
     }
 
