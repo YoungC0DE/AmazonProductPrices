@@ -32,7 +32,7 @@ class TicketQueue extends Command
     public function __construct() {
         parent::__construct();
 
-        $this->ticketRepository = new TicketRepository(new Tickets());
+        $this->ticketRepository = new TicketRepository();
         $this->queue = BeanstalkService::getInstance();
     }
 
@@ -55,7 +55,7 @@ class TicketQueue extends Command
             Log::info('Looking for pending tickets...', $context);
 
             $tickets = $this->ticketRepository
-                ->getPendingTickets($ticketId) ?? [];
+                ->getPendingTickets($ticketId ?? '');
 
             $ticketsCount = count($tickets);
             if (empty($ticketsCount) || $ticketsCount <= 0) {
@@ -85,6 +85,8 @@ class TicketQueue extends Command
         $this->queue->useTube(
             new TubeName(BeanstalkService::TICKET_PROCESS_TUBE)
         );
+
+        $this->ticketRepository->updateTicketAsRunning($ticket['_id']);
 
         $this->queue->put(
             json_encode($ticket),

@@ -4,15 +4,15 @@ namespace App\Models;
 
 class Tickets extends BaseModel
 {
-    const STATUS_PENDING = 0;
-    const STATUS_FINISHED = 1;
-    const STATUS_RUNNING = 2;
-    const STATUS_ERROR = 3;
+    public const STATUS_PENDING = 0;
+    public const STATUS_FINISHED = 1;
+    public const STATUS_RUNNING = 2;
+    public const STATUS_ERROR = 3;
 
     /**
      * @var array<int, string>
      */
-    const STATUS_LABEL = [
+    public const STATUS_LABEL = [
         self::STATUS_PENDING => 'PENDING',
         self::STATUS_FINISHED => 'FINISHED',
         self::STATUS_RUNNING => 'RUNNING',

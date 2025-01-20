@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\Factories\CrawlerFactory;
 use App\Models\Products;
+use App\Repositories\TicketRepository;
 use App\Services\BeanstalkService;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
@@ -64,18 +65,20 @@ class TicketProcess extends Command
                 'status' => $jobData['status'] ?? ''
             ];
 
+            $ticketRepository = new TicketRepository();
+
             try {
                 Log::info('Starting crawler...');
 
                 $crawlerName = $jobData['requestSettings']['platform'];
                 $crawler = CrawlerFactory::create($crawlerName);
 
-                $response = $crawler->process();
-                $response = array_merge($response, [
-                    'from' => new ObjectId($jobData['_id'])]
-                );
+                $response = $crawler->process($jobData);
 
-                Products::create($response);
+                $ticketRepository->updateTicketAsFinished(
+                    $jobData['_id'],
+                    ['result' => $response]
+                );
 
                 $this->queue->delete($job);
                 Log::info('Process finished.');
@@ -86,6 +89,11 @@ class TicketProcess extends Command
                         'error_message' => $error->getMessage(),
                         'error_trace' => $error->getTraceAsString(),
                     ])
+                );
+
+                $ticketRepository->updateTicketAsError(
+                    $jobData['_id'],
+                    $error->getMessage()
                 );
             }
         }

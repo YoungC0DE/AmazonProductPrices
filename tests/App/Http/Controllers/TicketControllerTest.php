@@ -16,9 +16,7 @@ class TicketControllerTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->ticketRepository = new TicketRepository(
-            (new Tickets)
-        );
+        $this->ticketRepository = new TicketRepository();
 
         $this->ticketController = new TicketController($this->ticketRepository);
 

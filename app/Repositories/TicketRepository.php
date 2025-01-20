@@ -7,10 +7,10 @@ use MongoDB\BSON\ObjectId;
 
 class TicketRepository
 {
-    public function __construct(
-        protected Tickets $model
-    ) {
+    protected $model;
 
+    public function __construct() {
+        $this->model = new Tickets();
     }
 
     /**
@@ -39,8 +39,8 @@ class TicketRepository
     public function create($params)
     {
         $statusData = [
-            'code' => Tickets::STATUS_PENDING,
-            'name' => Tickets::STATUS_LABEL[Tickets::STATUS_PENDING]
+            'code' => $this->model::STATUS_PENDING,
+            'name' => $this->model::STATUS_LABEL[$this->model::STATUS_PENDING]
         ];
 
         $data = [
@@ -77,5 +77,57 @@ class TicketRepository
         }
 
         return $query->get()->toArray();
+    }
+
+    /**
+     * @param string $ticketId
+     * @param array $data
+     * 
+     * @return void
+     */
+    public function updateTicketAsFinished(string $ticketId, array $data = [])
+    {
+        $data['status'] = [
+            'code' => $this->model::STATUS_FINISHED,
+            'text' => $this->model::STATUS_LABEL[$this->model::STATUS_FINISHED]
+        ];
+
+        $this->model->where('_id', new ObjectId($ticketId))
+            ->update($data);
+    }
+
+    /**
+     * @param string $ticketId
+     * @param string $mgsError
+     * 
+     * @return void
+     */
+    public function updateTicketAsError(string $ticketId, string $mgsError = '')
+    {
+        $data['status'] = [
+            'code' => $this->model::STATUS_ERROR,
+            'text' => $this->model::STATUS_LABEL[$this->model::STATUS_ERROR],
+            'errorMessage' => $mgsError
+        ];
+
+        $this->model->where('_id', new ObjectId($ticketId))
+            ->update($data);
+    }
+
+    /**
+     * @param string $ticketId
+     * 
+     * @return void
+     */
+    public function updateTicketAsRunning(string $ticketId)
+    {
+        $this->model->where('_id', new ObjectId($ticketId))
+            ->update([
+                'status' => 
+                    [
+                        'code' => $this->model::STATUS_RUNNING,
+                        'text' => $this->model::STATUS_LABEL[$this->model::STATUS_RUNNING],
+                    ]
+            ]);
     }
 }
