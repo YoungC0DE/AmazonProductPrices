@@ -25,6 +25,11 @@ Url base in local enviroment: `http://localhost:81/`
 
     GET /api/ticket/get-all
 
+| Parameter   | type       | Description                     |
+| :---------- | :--------- | :------------------------------ |
+| `platform` | `string` | **Optional**. AMAZON, MERCADO_LIVRE, OLX, EBAY |
+| `status` | `number` | **Optional**. 0 - Pending, 1 - Active, 2 - Running, 3 - Error |
+
 #### :large_blue_circle: Return a Ticket by ID
 
     GET /api/ticket/${id}
