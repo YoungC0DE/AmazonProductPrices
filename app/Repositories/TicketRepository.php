@@ -25,11 +25,24 @@ class TicketRepository
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Collection|null
+     * @param array $params
+     * 
+     * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
      */
-    public function getAll()
+    public function getAll(array $params)
     {
-        return $this->model->all();
+        // this 'where' is just a hook for the other 'where's' to work
+        $query = $this->model->where('_id', '$exists', true);
+
+        if (isset($params['status'])) {
+            $query->where('status.code', '=', $params['status']);
+        }
+
+        if (!empty($params['platform'])) {
+            $query->where('requestSettings.platform', '=', $params['platform']);
+        }
+
+        return $query->paginate((int) env('DEFAULT_PAGINATE', 20));
     }
 
     /**

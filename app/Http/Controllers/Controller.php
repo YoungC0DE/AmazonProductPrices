@@ -51,4 +51,17 @@ class Controller extends BaseController
             $code ?: httpCodes::HTTP_INTERNAL_SERVER_ERROR
         );
     }
+
+    /**
+     * @param mixed $message
+     * 
+     * @return mixed|\Illuminate\Http\JsonResponse
+     */
+    public function responseTooManyRequests($message)
+    {
+        return response()->json([
+            'message' => $message,
+            'showMessage' => true
+        ], httpCodes::HTTP_TOO_MANY_REQUESTS);
+    }
 }

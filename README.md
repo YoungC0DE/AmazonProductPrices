@@ -27,6 +27,7 @@ Url base in local enviroment: `http://localhost:81/`
 
 | Parameter   | type       | Description                     |
 | :---------- | :--------- | :------------------------------ |
+| `page` | `number` | **Optional**. the the result will be paginated, so you can pass a number to change the page (each page has 20 items) |
 | `platform` | `string` | **Optional**. AMAZON, MERCADO_LIVRE, OLX, EBAY |
 | `status` | `number` | **Optional**. 0 - Pending, 1 - Active, 2 - Running, 3 - Error |
 
@@ -54,4 +55,4 @@ Url base in local enviroment: `http://localhost:81/`
  - [@YoungC0DE](https://www.github.com/YoungC0DE)
  - [@jelsononofre](https://www.github.com/jelsononofre)
 
-[![MIT License](https://img.shields.io/badge/License-MIT-green.svg)](https://choosealicense.com/licenses/mit/)
+[![License: LGPL v3](https://img.shields.io/badge/License-LGPL_v3-blue.svg)](https://www.gnu.org/licenses/lgpl-3.0)

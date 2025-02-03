@@ -3,9 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\Tickets\CreateRequest;
+use App\Http\Requests\Tickets\GetAllRequest;
 use App\Repositories\TicketRepository;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 
 class TicketController extends Controller
 {
@@ -15,6 +15,7 @@ class TicketController extends Controller
 
     /**
      * @param string $ticketId
+     * 
      * @return \Illuminate\Http\JsonResponse
      */
     public function get(string $ticketId)
@@ -45,19 +46,16 @@ class TicketController extends Controller
     }
 
     /**
-     * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @param \App\Http\Requests\Tickets\GetAllRequest $request
+     * 
+     * @return JsonResponse
      */
-    public function getAll(Request $request)
+    public function getAll(GetAllRequest $request)
     {
         try {
-            $pass = $request->get('securityPass', '');
+            $params = $request->all();
 
-            if (empty($pass) || $pass !== env('SECURITY_PASS')) {
-                return $this->responseAccepted();
-            }
-
-            $result = $this->repository->getAll();
+            $result = $this->repository->getAll($params);
 
             return $this->responseItem($result);
         } catch (\Exception $e) {
