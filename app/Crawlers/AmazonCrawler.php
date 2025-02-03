@@ -2,6 +2,7 @@
 
 namespace App\Crawlers;
 
+use App\Repositories\TicketRepository;
 use Facebook\WebDriver\WebDriverBy;
 use Facebook\WebDriver\WebDriverSelect;
 use Illuminate\Support\Facades\Log;
@@ -14,12 +15,17 @@ class AmazonCrawler extends AbstractCrawler
 
     protected const MAX_LIST_ITEMS = 5;
 
+    protected const INPUT_SEARCH_ID = 'twotabsearchtextbox';
+    protected const SEARCH_BTN_ID = 'nav-search-submit-button';
+
+    protected const ITEM_SELETOR = "[data-csa-c-posx='%s']";
     protected const IMAGE_SELETOR = '.s-image';
     protected const TITLE_SELETOR = '[data-cy="title-recipe"] h2 span';
     protected const DESCRIPTION_SELETOR = '[data-cy="title-recipe"] a span';
     protected const RATING_SELETOR = '[data-cy="reviews-block"] div a:nth-child(2)';
     protected const PRICE_SELETOR = '[data-cy="price-recipe"] [aria-hidden="true"]';
     protected const DELIVERY_SELETOR = '[data-cy="delivery-recipe"] span:nth-child(1)';
+    protected const SORT_SELETOR = 's-result-sort-select';
 
     protected const MAPPING_SORT_BY = [
         'priceAscending' => 'price-asc-rank',
@@ -64,25 +70,17 @@ class AmazonCrawler extends AbstractCrawler
 
         sleep(2);
 
-        $this->driver->findElement(WebDriverBy::id('twotabsearchtextbox'))
+        $this->driver->findElement(WebDriverBy::id(self::INPUT_SEARCH_ID))
             ->sendKeys($searchQuery);
 
         sleep(1);
 
-        $this->driver->findElement(WebDriverBy::id('nav-search-submit-button'))
+        $this->driver->findElement(WebDriverBy::id(self::SEARCH_BTN_ID))
             ->click();
 
         sleep(2);
         
         Log::info('Searching for items...');
-
-        try {
-            $this->driver->findElement(
-                WebDriverBy::cssSelector('[data-image-latency="s-product-image"]')
-            );
-        } catch (\Exception $e) {
-            throw new \Exception("No result to: $searchQuery");
-        }
 
         $sortBy = $ticketData['filters']['sortBy'] ?? '';
 
@@ -92,7 +90,7 @@ class AmazonCrawler extends AbstractCrawler
         ) {
             sleep(2);
 
-            $selectElement = $this->driver->findElement(WebDriverBy::id('s-result-sort-select'));
+            $selectElement = $this->driver->findElement(WebDriverBy::id(self::SORT_SELETOR));
 
             sleep(1);
     
@@ -105,8 +103,9 @@ class AmazonCrawler extends AbstractCrawler
         }
 
         for ($count = 1; $count <= self::MAX_LIST_ITEMS; $count++) {
+            $seletor = sprintf(self::ITEM_SELETOR, $count);
             $item = $this->driver->findElement(
-                WebDriverBy::cssSelector("[data-csa-c-posx='$count']")
+                WebDriverBy::cssSelector($seletor)
             );
 
             Log::info("Getting data from item $count ...");

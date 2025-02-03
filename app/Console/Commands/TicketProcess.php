@@ -80,10 +80,12 @@ class TicketProcess extends Command
 
                 $response = $crawler->process($jobData);
 
-                $ticketRepository->updateTicketAsFinished(
-                    $jobData['_id'],
-                    ['result' => $response]
-                );
+                if (!empty($response)) {
+                    $ticketRepository->updateTicketAsFinished(
+                        $jobData['_id'],
+                        ['result' => $response]
+                    );
+                }
 
                 $this->queue->delete($job);
                 Log::info('Process finished.');
