@@ -17,7 +17,7 @@ class CreateRequest extends FormRequest
     public function rules()
     {
         return [
-            'requestSettings.platform' => 'required|string|in:AMAZON,MERCADO_LIVRE,OLX,EBAY',
+            'requestSettings.platform' => 'required|string|in:AMAZON,MERCADO_LIVRE,OLX,EBAY,SHOPEE',
             'requestSettings.searchQuery' => 'required|string|min:3',
             'filters.sortBy' => 'required|string|in:priceAscending,priceDescending,relevance',
             'filters.ratingAbove' => 'nullable|numeric|min:0|max:5',
@@ -43,7 +43,7 @@ class CreateRequest extends FormRequest
         return [
             'requestSettings.platform.required' => "Platform is required.",
             'requestSettings.platform.string' => "Platform must be a string.",
-            'requestSettings.platform.in' => "Platform must be one of: AMAZON, MERCADO_LIVRE, OLX, EBAY.",
+            'requestSettings.platform.in' => "Platform must be one of: AMAZON, MERCADO_LIVRE, OLX, EBAY or SHOPEE.",
             'requestSettings.searchQuery.required' => "Search query is required.",
             'requestSettings.searchQuery.string' => "Search query must be a string.",
             'requestSettings.searchQuery.min' => "Search query must have at least 3 characters.",
