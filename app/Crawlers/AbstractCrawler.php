@@ -34,6 +34,9 @@ abstract class AbstractCrawler
                 "--no-sandbox",
                 "--disable-dev-shm-usage",
                 "--disable-software-rasterizer",
+                "--disable-blink-features=AutomationControlled",
+                "--user-agent=ozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36",
+                "--disable-infobars"
             ];
 
             if (env('APP_ENV') === 'production') {
@@ -42,6 +45,8 @@ abstract class AbstractCrawler
         }
 
         $options->addArguments($crawlerOptions);
+        $options->setExperimentalOption('excludeSwitches', ['enable-automation']);
+        $options->setExperimentalOption('useAutomationExtension', false);
 
         $capabilities = DesiredCapabilities::chrome();
         $capabilities->setCapability('acceptSslCerts', true);
