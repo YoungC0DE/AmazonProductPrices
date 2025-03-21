@@ -17,6 +17,6 @@ Route::prefix('ticket')
     ->namespace('App\Http\Controllers')
     ->group(function () {
         Route::post('create', 'TicketController@create')->middleware('limitRate:create');
-        Route::get('get-all', 'TicketController@getAll')->middleware(middleware: 'limitRate:getAll');;
-        Route::get('{ticketId}', 'TicketController@get')->middleware('limitRate:get');;
+        Route::get('get-all', 'TicketController@getAll')->middleware('limitRate:getAll');
+        Route::get('{ticketId}', 'TicketController@get')->middleware('limitRate:get');
     });
