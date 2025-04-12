@@ -13,6 +13,11 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+Route::get("/ping", function () {
+    return 'sim';
+});
+
+
 Route::prefix('ticket')
     ->namespace('App\Http\Controllers')
     ->group(function () {
